@@ -1,21 +1,32 @@
 class MoneyManager():
-    user_account_number = '0'
+    user_account_number = ''
     user_pin_number = ''
     user_balance = 0.0
     type_ = ''
+    interest_rate = 0.0
     list_of_transaction = []
+
+
+    def __init__(self):
+        '''Constructor to set username to '', pin_number to an empty string,
+        balance to 0.0, and transaction_list to an empty list.'''
+        self.user_account_number = ''
+        self.user_pin_number = ''
+        self.user_balance  = 0.0
+        self.list_of_transaction = []
 
         
     def user_entry(self, money, type_):
         '''Function to add and entry an amount to the tool. Raises an
         exception if it receives a value for amount that cannot be cast to float. Raises an exception
         if the entry_type is not valid - i.e. not food, rent, bills, entertainment or other'''
+        type_valid = ['food', 'rent', 'bills', 'entertainment','other']
         try:
-            money_and_type = float(money)
-            if( money_and_type > self.user_balance):
+            money_ = float(money)
+            if( money_ > self.user_balance) or (type_ not in type_valid) :
                 raise Exception('The entry is not valid!!')
-            self.user_balance = float(self.user_balance) -  money_and_type   
-            transaction = ('Withdrawal', money_and_type)
+            self.user_balance = float(self.user_balance) -  money_   
+            transaction = ('Withdrawal', money_, type_)
             self.list_of_transaction.append(transaction)
             
         except Exception as e:
@@ -55,24 +66,34 @@ class MoneyManager():
         per transaction as outlined in the above 'get_transaction_string'
         function.'''
 
-        f = open(str(bank_account.user_account_number) +'.txt',"w+")
+        f = open('details.txt',"w+")
 
-        f.write(bank_account.account_number + '\n')
+        f.write(str(self.user_account_number) + '\n')
 
-        f.write(bank_account.user_pin_number + '\n')
+        f.write(self.user_pin_number + '\n')
 
-        f.write(str(bank_account.user_balance) + '\n')
+        f.write(str(self.user_balance) + '\n')
 
-        f.write(str(bank_account.interest_rate) + '\n')
+        f.write(str(self.interest_rate) + '\n')
 
-        for a in bank_account.transaction_list:
+        for a in self.list_of_transaction:
 
-            file.write(str(a[0]) + '\n')
+            f.write(str(a[0]) + '\n')
 
-            file.write(str(a[1]) + '\n')
+            f.write(str(a[1]) + '\n')
 
-        file.close()
+        f.close()
     
 
 
 
+m= MoneyManager()
+
+m.take_money(400)
+
+# # print(m.user_balance)
+m.user_entry(200, 'rent')
+print(m.list_of_transaction)
+print(m.get_details())
+
+# print(m.save_to_a_file())
